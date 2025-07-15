@@ -1,0 +1,5 @@
+{
+  "name": "Copy of AI App Builder",
+  "description": "A powerful and intuitive web interface to design, configure, and interact with custom AI agents powered by the Google Gemini API. Define an agent's persona, equip it with tools like web search and a calculator, and chat with your creation in real-time.",
+  "requestFramePermissions": []
+}
