@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import DataSourceManagerView from './components/DataSourceManagerView';
-import OrchestrationView from './components/OrchestrationView';
-import DigitalTwinView from './components/DigitalTwinView';
+import DataSourceManagerView from './src/components/DataSourceManagerView';
+import OrchestrationView from './src/components/OrchestrationView';
+import DigitalTwinView from './src/components/DigitalTwinView';
 
 type View = 'orchestration' | 'datasources' | 'twin';
 
