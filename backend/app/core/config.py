@@ -8,10 +8,10 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import Field, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 BACKEND_ROOT = Path(__file__).resolve().parents[2]  # …/backend
 
@@ -21,7 +21,12 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
         env_prefix="NEXUS_",
-        env_file=str(BACKEND_ROOT / ".env"),
+        # Look for a repo-root .env first, then a backend-local one (the latter
+        # wins on conflict, matching pydantic-settings' last-file-priority rule).
+        env_file=(
+            str(BACKEND_ROOT.parent / ".env"),
+            str(BACKEND_ROOT / ".env"),
+        ),
         env_file_encoding="utf-8",
         extra="ignore",
         case_sensitive=False,
@@ -33,7 +38,13 @@ class Settings(BaseSettings):
     environment: Literal["development", "staging", "production"] = "development"
     debug: bool = True
     api_prefix: str = "/api"
-    cors_origins: list[str] = Field(default_factory=lambda: ["*"])
+    # `NoDecode` disables pydantic-settings' automatic JSON decoding for this
+    # complex (list) field. Without it, a value like `NEXUS_CORS_ORIGINS=*` is
+    # fed to `json.loads()` and raises before `_split_origins` can run, so the
+    # comma-separated form documented in .env.example would be unusable.
+    cors_origins: Annotated[list[str], NoDecode] = Field(
+        default_factory=lambda: ["*"]
+    )
 
     @field_validator("cors_origins", mode="before")
     @classmethod
