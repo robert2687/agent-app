@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Scrollbars ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #27365a;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3b4f7e;
+}
+
+/* ── Component primitives ───────────────────────────────────────────────── */
+@layer components {
+  .nexus-panel {
+    @apply rounded-xl border border-nexus-700/60 bg-nexus-850/70 backdrop-blur;
+  }
+  .nexus-input {
+    @apply w-full rounded-lg border border-nexus-600/70 bg-nexus-900/80 px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none transition focus:border-indigo-500/70 focus:ring-2 focus:ring-indigo-500/20;
+  }
+  .nexus-label {
+    @apply mb-1.5 block text-xs font-medium uppercase tracking-wider text-slate-400;
+  }
+}
+
+/* SSE token stream: wrap long tokens without breaking layout */
+.token-stream {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Blinking cursor for live agent output */
+.live-cursor::after {
+  content: "▍";
+  animation: blink 1s steps(1) infinite;
+  color: #818cf8;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
