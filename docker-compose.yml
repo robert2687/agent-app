@@ -1,0 +1,98 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# NEXUS AI SWARM PLATFORM — Deployment Topology
+#   frontend (nginx)  :80       → static SPA + reverse proxy /api,/ws → backend
+#   backend  (uvicorn):8000     → FastAPI, SSE/WebSocket, swarm orchestrator
+#   postgres (profile: extended) → optional durable database backend
+#   redis    (profile: extended) → optional rate-limit / cache backend
+# ═══════════════════════════════════════════════════════════════════════════
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: nexus/swarm-backend:latest
+    container_name: nexus-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NEXUS_ENV: production
+      NEXUS_DEBUG: "false"
+      NEXUS_DATABASE_URL: sqlite+aiosqlite:///./data/nexus.db
+      NEXUS_CLONE_ROOT: /data/workspace/repos
+    volumes:
+      - nexus-backend-data:/data
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - nexus-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: nexus/swarm-frontend:latest
+    container_name: nexus-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - nexus-net
+
+  postgres:
+    image: postgres:16-alpine
+    profiles: ["extended"]
+    container_name: nexus-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nexus
+      POSTGRES_PASSWORD: nexus
+      POSTGRES_DB: nexus
+    volumes:
+      - nexus-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nexus"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nexus-net
+
+  redis:
+    image: redis:7-alpine
+    profiles: ["extended"]
+    container_name: nexus-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - nexus-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nexus-net
+
+volumes:
+  nexus-backend-data:
+  nexus-postgres-data:
+  nexus-redis-data:
+
+networks:
+  nexus-net:
+    driver: bridge

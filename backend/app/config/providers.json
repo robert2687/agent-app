@@ -1,0 +1,117 @@
+{
+  "vault_config": {
+    "encryption_algorithm": "AES-256-GCM",
+    "pbkdf2_iterations": 100000
+  },
+  "providers": [
+    {
+      "provider_id": "nvidia_nemotron",
+      "display_name": "NVIDIA Nemotron NIM",
+      "base_url": "https://integrate.api.nvidia.com/v1",
+      "default_model": "nvidia/nemotron-4-340b-instruct",
+      "supported_models": [
+        "nvidia/nemotron-4-340b-instruct",
+        "nvidia/llama-3.1-nemotron-70b-instruct"
+      ],
+      "auth_scheme": "bearer",
+      "auth_header": "Bearer",
+      "extra_headers": {},
+      "max_tokens_limit": 4096,
+      "context_window": 131072,
+      "priority": 20,
+      "notes": "NVIDIA build.nvidia.com NIM endpoint. Keys start with nvapi-."
+    },
+    {
+      "provider_id": "qwen_dashscope",
+      "display_name": "Alibaba DashScope (Qwen)",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "default_model": "qwen-max",
+      "supported_models": [
+        "qwen-max",
+        "qwen-plus",
+        "qwen-coder-turbo",
+        "qwen2.5-coder-32b-instruct"
+      ],
+      "auth_scheme": "bearer",
+      "auth_header": "Bearer",
+      "extra_headers": {},
+      "max_tokens_limit": 8192,
+      "context_window": 131072,
+      "priority": 30,
+      "notes": "DashScope OpenAI-compatible mode. Keys start with sk-."
+    },
+    {
+      "provider_id": "qwen_openrouter",
+      "display_name": "OpenRouter (Qwen Route)",
+      "base_url": "https://openrouter.ai/api/v1",
+      "default_model": "qwen/qwen-2.5-coder-32b-instruct",
+      "supported_models": [
+        "qwen/qwen-2.5-coder-32b-instruct"
+      ],
+      "auth_scheme": "bearer",
+      "auth_header": "Bearer",
+      "extra_headers": {
+        "HTTP-Referer": "https://nexus-swarm.local",
+        "X-Title": "Nexus AI Swarm Platform"
+      },
+      "max_tokens_limit": 16384,
+      "context_window": 65536,
+      "priority": 40,
+      "notes": "OpenRouter unified route for Qwen Coder models."
+    },
+    {
+      "provider_id": "openai",
+      "display_name": "OpenAI",
+      "base_url": "https://api.openai.com/v1",
+      "default_model": "gpt-4o-mini",
+      "supported_models": [
+        "gpt-4o-mini",
+        "gpt-4o",
+        "o4-mini"
+      ],
+      "auth_scheme": "bearer",
+      "auth_header": "Bearer",
+      "extra_headers": {},
+      "max_tokens_limit": 16384,
+      "context_window": 128000,
+      "priority": 50,
+      "notes": "Reference OpenAI endpoint."
+    },
+    {
+      "provider_id": "anthropic",
+      "display_name": "Anthropic (OpenAI-compat)",
+      "base_url": "https://api.anthropic.com/v1",
+      "default_model": "claude-3-5-sonnet-latest",
+      "supported_models": [
+        "claude-3-5-sonnet-latest",
+        "claude-3-5-haiku-latest"
+      ],
+      "auth_scheme": "x-api-key",
+      "auth_header": "Bearer",
+      "extra_headers": {
+        "anthropic-version": "2023-06-01"
+      },
+      "max_tokens_limit": 8192,
+      "context_window": 200000,
+      "priority": 60,
+      "notes": "Anthropic Messages API via x-api-key + anthropic-version."
+    },
+    {
+      "provider_id": "google_gemini",
+      "display_name": "Google Gemini (OpenAI-compat)",
+      "base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
+      "default_model": "gemini-2.0-flash",
+      "supported_models": [
+        "gemini-2.0-flash",
+        "gemini-1.5-pro"
+      ],
+      "auth_scheme": "bearer",
+      "auth_header": "Bearer",
+      "extra_headers": {},
+      "max_tokens_limit": 8192,
+      "context_window": 1000000,
+      "priority": 70,
+      "notes": "Gemini OpenAI-compatible endpoint."
+    }
+  ]
+}

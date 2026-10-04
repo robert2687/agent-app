@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+legacy
+docs
+**/__pycache__
+**/.venv
+**/node_modules
+**/dist
+**/*.db
+workspace
+data
+Makefile
+docker-compose.yml
